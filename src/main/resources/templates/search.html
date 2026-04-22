@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search — Sonic</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
+</head>
+<body>
+<div class="app-shell">
+
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <div class="app-content">
+        <div th:replace="~{fragments/layout :: topbar}"></div>
+
+        <main class="page-main">
+
+            <div class="page-header">
+                <h1 class="page-title pixel-font">Search</h1>
+                <form th:action="@{/search}" method="get" class="search-form" style="margin-top:1rem; display:flex; gap:.75rem; max-width:560px;">
+                    <input type="text" name="q" th:value="${query}"
+                           placeholder="Song name, artist, album…"
+                           autofocus
+                           style="flex:1; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-pill); padding:.75rem 1.25rem; color:var(--text-primary); font-size:1rem; outline:none;">
+                    <button type="submit" class="btn-primary">
+                        <i class="ph ph-magnifying-glass"></i> Search
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div th:if="${query != null and !query.isEmpty()}" style="margin-top:2rem;">
+                <h2 class="section-heading" th:text="'Results for &quot;' + ${query} + '&quot;'">Results</h2>
+
+                <div class="track-list" th:if="${results != null and !results.isEmpty()}" id="search-results">
+                    <div th:each="song, stat : ${results}"
+                         class="list-item"
+                         th:data-id="${song.id}"
+                         th:data-title="${song.title}"
+                         th:data-artist="${song.artist}"
+                         th:data-album="${song.album}"
+                         th:data-image="${song.image}"
+                         th:data-url="${song.downloadUrl}"
+                         onclick="playSongFromBtn(this)">
+                        <span class="list-num" th:text="${stat.index + 1}">1</span>
+                        <img class="list-art"
+                             th:src="${song.image != null and !song.image.isEmpty() ? song.image : '/images/default-art.png'}"
+                             alt="Cover"
+                             onerror="this.src='/images/default-art.png'">
+                        <div class="list-info">
+                            <div class="list-title"  th:text="${song.title}">Title</div>
+                            <div class="list-artist" th:text="${song.artist}">Artist</div>
+                        </div>
+                        <span class="list-duration" th:text="${song.duration}"></span>
+                        <button type="button" class="list-play-btn"
+                                th:data-id="${song.id}"
+                                th:data-title="${song.title}"
+                                th:data-artist="${song.artist}"
+                                th:data-album="${song.album}"
+                                th:data-image="${song.image}"
+                                th:data-url="${song.downloadUrl}"
+                                onclick="event.stopPropagation(); playSongFromBtn(this)">
+                            <i class="ph-fill ph-play"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div th:if="${results == null or results.isEmpty()}" class="empty-state">
+                    <i class="ph-fill ph-ghost empty-icon"></i>
+                    <p>No results found for "<span th:text="${query}"></span>"</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/player :: player}"></div>
+
+</div>
+
+<script th:src="@{/js/player.js}"></script>
+<script>
+    (function(){
+        var t = localStorage.getItem('sonic-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+    }());
+
+    // Build search queue so clicking any result passes the full list as context
+    document.addEventListener('DOMContentLoaded', function () {
+        var rows = Array.from(document.querySelectorAll('#search-results .list-item'));
+        window.__searchQueue = rows.map(function (r) {
+            return {
+                id:          r.getAttribute('data-id'),
+                title:       r.getAttribute('data-title'),
+                artist:      r.getAttribute('data-artist'),
+                album:       r.getAttribute('data-album'),
+                image:       r.getAttribute('data-image'),
+                downloadUrl: r.getAttribute('data-url')
+            };
+        });
+
+        // Override playSongFromBtn for search page to always pass search queue
+        var origFn = window.playSongFromBtn;
+        window.playSongFromBtn = function (btn) {
+            var song = {
+                id:          btn.getAttribute('data-id')     || '',
+                title:       btn.getAttribute('data-title')  || '',
+                artist:      btn.getAttribute('data-artist') || '',
+                album:       btn.getAttribute('data-album')  || '',
+                image:       btn.getAttribute('data-image')  || '',
+                downloadUrl: btn.getAttribute('data-url')    || ''
+            };
+            window.sonicPlayer.playSong(song, window.__searchQueue || [song]);
+        };
+
+        var btn = document.getElementById('theme-toggle-btn');
+        if (btn) btn.addEventListener('click', function () {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sonic-theme', next);
+            var icon = document.getElementById('theme-icon');
+            if (icon) icon.className = next === 'dark' ? 'ph-fill ph-moon' : 'ph-fill ph-sun';
+        });
+    });
+</script>
+</body>
+</html>

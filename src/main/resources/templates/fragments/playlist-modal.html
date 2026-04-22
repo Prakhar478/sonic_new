@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Playlist Modal Fragment -->
+    <div th:fragment="playlistModal" id="playlist-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="pixel-font">Add to Playlist</h3>
+                <button type="button" class="modal-close" id="close-playlist-modal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="modal-existing-playlists" class="modal-playlist-list">
+                    <!-- Playlists injected here -->
+                </div>
+                
+                <div class="modal-create-section">
+                    <div class="input-group">
+                        <input type="text" id="new-playlist-name" placeholder="New playlist name..." class="modal-input">
+                        <button type="button" id="btn-create-playlist" class="btn-primary">
+                            <i class="ph-fill ph-plus"></i> CREATE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

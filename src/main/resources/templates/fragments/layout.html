@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR FRAGMENT
+     ════════════════════════════════════════════════════════════ -->
+<aside th:fragment="sidebar" class="sidebar">
+    <a th:href="@{/}" class="sidebar-brand">SONIC</a>
+
+    <nav class="sidebar-nav">
+        <a th:href="@{/}"        class="nav-item" th:classappend="${currentPage == 'home'}    ? ' active' : ''" title="Home">
+            <i class="ph-fill ph-house-line"></i>
+            <span>Home</span>
+        </a>
+        <a th:href="@{/search}"  class="nav-item" th:classappend="${currentPage == 'search'}  ? ' active' : ''" title="Search">
+            <i class="ph-fill ph-magnifying-glass"></i>
+            <span>Search</span>
+        </a>
+        <a th:href="@{/youtube}" class="nav-item" th:classappend="${currentPage == 'youtube'} ? ' active' : ''" title="Import Playlist">
+            <i class="ph-fill ph-list-plus"></i>
+            <span>Import</span>
+        </a>
+        <a th:href="@{/library}" class="nav-item" th:classappend="${currentPage == 'library'} ? ' active' : ''" title="Library">
+            <i class="ph-fill ph-books"></i>
+            <span>Library</span>
+        </a>
+    </nav>
+    
+    <!-- Mobile Bottom Nav (Visible only on mobile) -->
+    <nav class="mobile-nav">
+        <a th:href="@{/}" class="mobile-nav-item" th:classappend="${currentPage == 'home'} ? ' active' : ''">
+            <i class="ph-fill ph-house-line"></i>
+        </a>
+        <a th:href="@{/search}" class="mobile-nav-item" th:classappend="${currentPage == 'search'} ? ' active' : ''">
+            <i class="ph-fill ph-magnifying-glass"></i>
+        </a>
+        <a th:href="@{/youtube}" class="mobile-nav-item" th:classappend="${currentPage == 'youtube'} ? ' active' : ''">
+            <i class="ph-fill ph-list-plus"></i>
+        </a>
+        <a th:href="@{/library}" class="mobile-nav-item" th:classappend="${currentPage == 'library'} ? ' active' : ''">
+            <i class="ph-fill ph-books"></i>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="theme-toggle" id="theme-toggle-btn" title="Toggle theme">
+            <i class="ph-fill ph-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOPBAR FRAGMENT
+     ════════════════════════════════════════════════════════════ -->
+<header th:fragment="topbar" class="topbar">
+    <div class="topbar-search" th:if="${currentPage != 'search'}">
+        <form th:action="@{/search}" method="get">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" name="q" placeholder="Search songs, artists, albums…" autocomplete="off">
+        </form>
+    </div>
+    <div class="topbar-right">
+        <span class="topbar-app-name">SONIC</span>
+    </div>
+</header>
+
+</body>
+</html>

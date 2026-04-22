@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Playlist - Sonic</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script th:src="@{/js/app.js}"></script>
+</head>
+<body data-theme="dark">
+    <div class="dashboard-container">
+        
+        <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+        <main class="main-view">
+            <div th:replace="~{fragments/layout :: topbar}"></div>
+
+            <div class="content-area">
+                <div class="import-container" style="margin: 0 auto; margin-top: 4rem;">
+                    <h1 class="hero-title pixel-font" style="font-size: 3rem; margin-bottom: 1rem;">Import Playlist</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">Paste your track list below (one song per line). Sonic will automatically clean the titles and match them against high-quality audio streams.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <textarea id="text-playlist-input" rows="8" placeholder="e.g.&#10;Arijit Singh - Tum Hi Ho&#10;The Weeknd - Blinding Lights (Official Audio)&#10;Daft Punk - Get Lucky" 
+                            style="width: 100%; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-base); color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; outline: none; resize: vertical;"></textarea>
+                        
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button class="btn-primary" id="btn-import">
+                                <i class="ph-fill ph-list-plus"></i> IMPORT PLAYLIST
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="import-status" class="pixel-font" style="text-align: center; font-size: 1.2rem; color: var(--text-secondary); display: none; margin-top: 2rem;">
+                        <i class="ph ph-spinner ph-spin" style="margin-right: 0.5rem;"></i> Importing & Matching... this may take a moment.
+                    </div>
+                </div>
+
+                <div id="imported-playlist-area" style="margin-top: 4rem; display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title pixel-font" id="imported-title">Imported Playlist</h2>
+                        <button class="btn-primary" id="btn-play-all" style="font-size: 1rem; padding: 0.8rem 2rem;">
+                            <i class="ph-fill ph-play"></i> PLAY ALL
+                        </button>
+                    </div>
+                    <div class="list-view" id="imported-tracks-list">
+                        <!-- Tracks will be injected here by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div th:replace="~{fragments/player :: player}"></div>
+    </div>
+    
+    <script th:src="@{/js/player.js}"></script>
+    <script th:src="@{/js/import.js}"></script>
+    <script>
+        const saved = localStorage.getItem('sonic-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+    </script>
+</body>
+</html>
